@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Institute of Biomathematics · 生物数学研究所</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    background: #fafbfc;
+    color: #1f2937;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+  a { color: #1e40af; text-decoration: none; transition: color .15s; }
+  a:hover { color: #1e3a8a; }
+  /* ===== Navigation ===== */
+  .nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(255,255,255,.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid #e5e7eb;
+    padding: 0 40px;
+  }
+  .nav-inner {
+    max-width: 1200px; margin: 0 auto;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 64px;
+  }
+  .nav-brand {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 16px; font-weight: 700; color: #1a3a5c;
+  }
+  .nav-brand .icon {
+    width: 32px; height: 32px;
+    background: #1a3a5c; color: #fff;
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; font-weight: 700;
+  }
+  .nav-links { display: flex; gap: 28px; }
+  .nav-links a {
+    font-size: 14px; color: #4b5563; font-weight: 500;
+    transition: color .15s;
+  }
+  .nav-links a:hover { color: #1a3a5c; }
+  /* ===== Page Container ===== */
+  .page { display: none; }
+  .page.active { display: block; }
+  /* ===== Hero ===== */
+  .hero {
+    background: linear-gradient(135deg, #1a3a5c 0%, #0f2540 100%);
+    color: #fff;
+    padding: 80px 40px 60px;
+    text-align: center;
+  }
+  .hero h1 {
+    font-size: 42px; font-weight: 700;
+    letter-spacing: -.02em;
+    margin-bottom: 12px;
+  }
+  .hero .sub {
+    font-size: 18px; opacity: .8;
+    max-width: 600px; margin: 0 auto 8px;
+  }
+  .hero .sub-en {
+    font-size: 14px; opacity: .5; font-style: italic;
+  }
+  /* ===== Sections ===== */
+  .section {
+    max-width: 1200px; margin: 0 auto;
+    padding: 60px 40px;
+  }
+  .section-title {
+    font-size: 24px; font-weight: 700; color: #1a3a5c;
+    margin-bottom: 8px;
+  }
+  .section-sub {
+    font-size: 14px; color: #6b7280; margin-bottom: 32px;
+  }
+  .source-block{
+    margin-top:24px;
+    padding:18px 20px;
+    background:#ffffff;
+    border:1px solid #e5e7eb;
+    border-radius:10px;
+  }
+  .source-block h3{
+    font-size:16px;
+    color:#1a3a5c;
+    margin-bottom:8px;
+  }
+  .source-block p{
+    font-size:14px;
+    color:#4b5563;
+    margin-bottom:12px;
+    line-height:1.7;
+  }
+  .source-link-item{
+    font-size:14px;
+    margin:6px 0;
+  }
+  .source-tag{
+    display:inline-block;
+    background:#fff7ed;
+    color:#c2410c;
+    font-size:11px;
+    padding:2px 7px;
+    border-radius:4px;
+    margin-right:8px;
+  }
+  /* ===== Research Cards ===== */
+  .research-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+  }
+  .research-card {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 24px;
+    transition: box-shadow .2s;
+  }
+  .research-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,.06); }
+  .research-card .num {
+    font-size: 12px; font-weight: 600; color: #c9a961;
+    letter-spacing: .08em; margin-bottom: 8px;
+  }
+  .research-card h3 {
+    font-size: 16px; font-weight: 600; color: #1f2937;
+    margin-bottom: 6px;
+  }
+  .research-card p {
+    font-size: 13px; color: #6b7280; line-height: 1.6;
+  }
+  /* ===== People Grid ===== */
+  .people-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+  }
+  .person-card {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: box-shadow .2s, transform .15s;
+  }
+  .person-card:hover {
+    box-shadow: 0 6px 20px rgba(0,0,0,.08);
+    transform: translateY(-2px);
+  }
+  .person-photo {
+    width: 100%; height: 160px;
+    background: linear-gradient(135deg, #e8ecf1, #d1d9e3);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .person-photo svg {
+    width: 56px; height: 56px;
+    color: #94a3b8;
+  }
+  .person-info { padding: 16px 20px 20px; }
+  .person-name {
+    font-size: 16px; font-weight: 600; color: #1f2937;
+  }
+  .person-name-en {
+    font-size: 12px; color: #9ca3af; margin-bottom: 6px;
+  }
+  .person-title {
+    font-size: 12px; color: #c9a961; font-weight: 500;
+    margin-bottom: 8px;
+  }
+  .person-desc {
+    font-size: 13px; color: #6b7280; line-height: 1.5;
+  }
+  .person-cta {
+    margin-top: 12px; font-size: 12px; color: #1e40af;
+    font-weight: 500;
+  }
+  /* ===== Footer ===== */
+  .footer {
+    border-top: 1px solid #e5e7eb;
+    padding: 32px 40px;
+    text-align: center;
+    font-size: 12px; color: #9ca3af;
+  }
+  /* ===== Archive Page (个人档案页) ===== */
+  .archive-header {
+    background: #fff;
+    border-bottom: 1px solid #e5e7eb;
+    padding: 24px 40px;
+  }
+  .archive-header-inner {
+    max-width: 1200px; margin: 0 auto;
+    display: flex; align-items: center; gap: 20px;
+    flex-wrap: wrap;
+  }
+  .back-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 13px; color: #4b5563;
+    padding: 6px 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all .15s;
+    background: #fff;
+    font-family: inherit;
+  }
+  .back-btn:hover { background: #f9fafb; border-color: #9ca3af; }
+  .archive-person-info h2 {
+    font-size: 22px; font-weight: 700; color: #1a3a5c;
+  }
+  .archive-person-info .meta {
+    font-size: 13px; color: #6b7280; margin-top: 2px;
+  }
+  /* Archive layout */
+  .archive-layout {
+    max-width: 1200px; margin: 0 auto;
+    padding: 28px 40px 80px;
+    display: flex; gap: 32px;
+    align-items: flex-start;
+  }
+  .archive-sidebar {
+    width: 200px; flex-shrink: 0;
+    position: sticky; top: 88px;
+    max-height: calc(100vh - 110px);
+    overflow-y: auto;
+  }
+  .archive-sidebar::-webkit-scrollbar { width: 4px; }
+  .archive-sidebar::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 2px; }
+  .sidebar-section { margin-bottom: 20px; }
+  .sidebar-title {
+    font-size: 11px; font-weight: 600; color: #9ca3af;
+    letter-spacing: .06em; text-transform: uppercase;
+    margin-bottom: 6px; padding: 0 10px;
+  }
+  .sidebar-desc {
+    font-size: 10px;
+    color:#9ca3af;
+    padding:0 10px 8px;
+    line-height:1.4;
+  }
+  .sidebar-list { list-style: none; }
+  .sidebar-item {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 5px 10px; border-radius: 6px;
+    font-size: 13px; color: #4b5563;
+    cursor: pointer; transition: all .12s;
+    user-select: none;
+  }
+  .sidebar-item:hover { background: #f3f4f6; color: #1f2937; }
+  .sidebar-item.active {
+    background: rgba(30,64,175,.08);
+    color: #1e40af; font-weight: 500;
+  }
+  .sidebar-item .cnt {
+    font-size: 11px; color: #9ca3af;
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+  }
+  .sidebar-item.active .cnt { color: #1e40af; }
+  .sidebar-group {
+    font-size: 11px; color: #9ca3af;
+    padding: 8px 10px 2px; font-weight: 600;
+  }
+  .archive-content { flex: 1; min-width: 0; }
+  .stats-bar { display: flex; gap: 24px; margin-bottom: 24px; flex-wrap: wrap; }
+  .stat-item { font-size: 13px; color: #6b7280; }
+  .stat-item strong { color: #111827; font-weight: 600; margin-left: 4px; }
+  .stat-item .en { font-size: 11px; color: #9ca3af; margin-left: 4px; }
+  .view-tabs {
+    display: inline-flex; gap: 4px;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 4px;
+    margin-bottom: 20px;
+  }
+  .view-tab {
+    padding: 7px 12px;
+    font-size: 13px; font-weight: 500;
+    color: #6b7280;
+    background: transparent;
+    border: none; border-radius: 7px;
+    cursor: pointer;
+    transition: all .15s ease;
+    font-family: inherit;
+    text-align: center;
+    line-height: 1.3;
+  }
+  .view-tab .en { display: block; font-size: 10px; font-weight: 400; opacity: .7; }
+  .view-tab:hover { color: #374151; }
+  .view-tab.active {
+    background: #1e40af; color: #fff;
+  }
+  .tag-group { margin-bottom: 32px; }
+  .tag-group-header {
+    display: flex; align-items: baseline; gap: 10px;
+    margin-bottom: 12px; padding-bottom: 8px;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  .tag-group-title { font-size: 15px; font-weight: 600; color: #111827; }
+  .tag-group-title .en { font-size: 12px; font-weight: 400; color: #6b7280; margin-left: 6px; }
+  .tag-group-count { font-size: 12px; color: #9ca3af; font-family: "SF Mono", monospace; }
+  .file-list { display: flex; flex-direction: column; gap: 10px; }
+  .file-card {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 16px 20px;
+    transition: border-color .15s, box-shadow .15s;
+  }
+  .file-card:hover { border-color: #d1d5db; box-shadow: 0 2px 8px rgba(0,0,0,.05); }
+  .file-top {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    gap: 16px; margin-bottom: 8px;
+  }
+  .file-name { font-size: 15px; font-weight: 600; color: #111827; line-height: 1.4; }
+  .file-name-en { font-size: 12px; font-weight: 400; color: #6b7280; margin-top: 2px; }
+  .file-abstract {
+    font-size: 13px;
+    color: #4b5563;
+    margin:10px 0;
+    line-height:1.6;
+  }
+  .file-abstract-en {
+    font-size:12px;
+    color:#6b7280;
+    margin-top:4px;
+  }
+  /*作者说明外部链接区块*/
+  .author-note-link-list {
+    margin:10px 0;
+  }
+  .author-note-link-item {
+    font-size:12px;
+    margin:4px 0;
+    word-break:break-all;
+  }
+  .author-note-name {
+    display:inline-block;
+    background:#f3f4f6;
+    color:#374151;
+    font-size:11px;
+    padding:1px 6px;
+    border-radius:4px;
+    margin-right:6px;
+  }
+  .chain-list {
+    margin:10px 0;
+  }
+  .chain-item {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size:12px;
+    color:#6b7280;
+    margin:4px 0;
+    word-break:break-all;
+  }
+  .chain-name {
+    display:inline-block;
+    background:#eff6ff;
+    color:#1e40af;
+    font-size:11px;
+    padding:1px 6px;
+    border-radius:4px;
+    margin-right:6px;
+  }
+  .preprint-list {
+    margin:10px 0;
+  }
+  .preprint-item {
+    font-size:12px;
+    margin:4px 0;
+    word-break:break-all;
+  }
+  .preprint-name {
+    display:inline-block;
+    background:#f0fdf4;
+    color:#15803d;
+    font-size:11px;
+    padding:1px 6px;
+    border-radius:4px;
+    margin-right:6px;
+  }
+  .file-badge {
+    flex-shrink: 0;
+    font-size: 11px; font-weight: 500;
+    padding: 3px 10px; border-radius: 20px;
+    background: rgba(30,64,175,.08); color: #1e40af;
+    white-space: nowrap; text-align: center;
+  }
+  .file-badge .en { display: block; font-size: 10px; font-weight: 400; opacity: .8; }
+  .file-meta { display: flex; flex-wrap: wrap; gap: 16px; font-size: 12px; color: #6b7280; }
+  .file-meta span { display: inline-flex; align-items: center; gap: 5px; }
+  .file-meta .meta-label { color: #9ca3af; }
+  .file-meta .meta-label .en { color: #c0c4cc; font-size: 11px; }
+  .meta-note {
+    width:100%;
+    font-size:10px;
+    color:#9ca3af;
+    margin-top:4px;
+    line-height:1.4;
+  }
+  .file-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+  .tag-chip {
+    font-size: 11px; padding: 2px 9px; border-radius: 4px;
+    background: #f3f4f6; color: #4b5563; border: 1px solid #e5e7eb;
+    white-space: nowrap;
+  }
+  .tag-chip .en { color: #9ca3af; font-size: 10px; margin-left: 4px; }
+  .timeline { position: relative; padding-left: 28px; }
+  .timeline::before {
+    content: ''; position: absolute; left: 8px; top: 8px; bottom: 8px;
+    width: 2px; background: #e5e7eb;
+  }
+  .timeline-item { position: relative; margin-bottom: 20px; }
+  .timeline-item::before {
+    content: ''; position: absolute; left: -24px; top: 22px;
+    width: 10px; height: 10px; border-radius: 50%;
+    background: #1e40af; border: 2px solid #fafbfc;
+    box-shadow: 0 0 0 2px #1e40af;
+  }
+  .timeline-date {
+    font-size: 12px; color: #6b7280;
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    margin-bottom: 6px;
+  }
+  .empty-state { text-align: center; padding: 60px 20px; color: #9ca3af; font-size: 14px; }
+  /* ===== Responsive ===== */
+  @media (max-width: 900px) {
+    .archive-layout { flex-direction: column; }
+    .archive-sidebar {
+      width: 100%; position: static; max-height: none;
+      border-bottom: 1px solid #e5e7eb; padding-bottom: 12px;
+    }
+    .sidebar-list { display: flex; flex-wrap: wrap; gap: 4px; }
+    .sidebar-item {
+      padding: 4px 10px; font-size: 12px;
+      border: 1px solid #e5e7eb; border-radius: 16px;
+    }
+    .sidebar-item .cnt { display: none; }
+    .sidebar-group { font-size: 10px; padding: 4px 10px 2px; color: #9ca3af; }
+    .sidebar-desc { font-size:9px; }
+    .view-tabs { flex-wrap: wrap; }
+  }
+  @media (max-width: 1000px) {
+    .people-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 640px) {
+    .people-grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 640px) {
+    .nav { padding: 0 16px; }
+    .nav-links { display: none; }
+    .hero { padding: 48px 20px 40px; }
+    .hero h1 { font-size: 28px; }
+    .hero .sub { font-size: 15px; }
+    .section { padding: 40px 20px; }
+    .archive-header { padding: 16px 20px; }
+    .archive-layout { padding: 20px 16px 60px; }
+    .view-tabs { justify-content: center; width: 100%; }
+    .file-top { flex-direction: column; }
+    .file-badge { align-self: flex-start; }
+    .source-block{
+      padding:14px 16px;
+    }
+  }
+</style>
+</head>
+<body>
+<!-- 顶部导航（两个页面共用） -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="#/" class="nav-brand">
+      <div class="icon">B</div>
+      <span>Institute of Biomathematics</span>
+    </a>
+    <div class="nav-links">
+      <a href="#/">首页 Main Page</a>
+      <a href="#/research">研究方向 Research Topic</a>
+      <a href="#/people">团队成员 People</a>
+      <a href="#/about">关于我们 About Us</a>
+    </div>
+  </div>
+</nav>
+<!-- ===== 首页 ===== -->
+<div class="page active" id="page-home">
+  <section class="hero">
+    <h1>生物数学研究所 Institute of Biomathematics</h1>
+    <div class="sub">以统计学搭建生命与数学之间的桥梁</div>
+    <div class="sub-en">Bridging life and mathematics with statistics</div>
+  </section>
+  <section class="section" id="research">
+    <h2 class="section-title">研究方向 Research Topic</h2>
+    <p class="section-sub"></p>
+    <div class="research-grid">
+      <div class="research-card">
+        <div class="num">01</div>
+        <h3>理论统计学 Theoretical Statistics</h3>
+        <p>描述性统计学 Descriptive Statistics</p>
+      </div>
+      <div class="research-card">
+        <div class="num">02</div>
+        <h3>生物统计学 Biological Statistics</h3>
+        <p>组学分析 Omics Analysis</p>
+      </div>
+    </div>
+  </section>
+  <section class="section" id="people">
+    <h2 class="section-title">研究团队 People</h2>
+    <p class="section-sub">Click to View the Documents · 点击成员查看其研究档案</p>
+    <div class="people-grid" id="peopleGrid"></div>
+  </section>
+  <section class="section" id="about" style="padding-top:0">
+    <h2 class="section-title">关于我们 About Us</h2>
+    <p class="section-sub">简介 Brief</p>
+    <p style="font-size:14px;color:#4b5563;max-width:720px;line-height:1.8">
+      生物数学研究所致力于以统计学搭建生命与数学之间的桥梁，探索生命现象的规律。我们的研究涵盖从分子生物学到生态系统的多个尺度，致力于发展新的理论方法、工具和实验数据解析框架，推动数学与生命科学的深度交叉。研究所所有研究成果均通过区块链网络永久存档，确保学术记录的不可篡改与长期可访问。
+    </p>
+<p style="font-size:14px;color:#4b5563;max-width:720px;line-height:1.8">
+The Institute of Biomathematics aims to bridge life and mathematics with statistics to exploring the principles of living systems through mathematics and computation as its core tools. Our research spans multiple scales, from molecular biology to ecosystems, and is committed to developing novel theoretical methods, computational tools, and experimental data analysis frameworks that advance the deep intersection of mathematics and the life sciences. All research outputs of the Institute are permanently archived on the blockchain, ensuring academic records remain tamper‑proof and permanently accessible.
+    </p>
+
+    <div class="source-block">
+      <h3>网站源代码 Website Source Code</h3>
+      <p>本网站为豆包编码的单页静态HTML，你可以下载网页源代码。<br/>This website is a single‑page static HTML site coded by Doubao. You may download its source code.</p>
+      <div class="source-link-item">
+        <span class="source-tag">外部仓库</span>
+        <a href="https://github.com/johon-lituobang/biomathematics.org" target="_blank" rel="noopener">代码仓库 Repository</a>
+      </div>
+    </div>
+
+  </section>
+  <footer class="footer">
+   Institute of Biomathematics · biomathematics.org · 2022 Thanks to doubao.com for assistance in constructing this website.
+  </footer>
+</div>
+<!-- ===== 个人档案页 ===== -->
+<div class="page" id="page-archive">
+  <div class="archive-header">
+    <div class="archive-header-inner">
+      <button class="back-btn" onclick="location.hash='/'">← Back 返回</button>
+      <div class="archive-person-info">
+        <h2 id="archiveName"></h2>
+        <div class="meta" id="archiveMeta"></div>
+      </div>
+    </div>
+  </div>
+  <div class="archive-layout">
+    <aside class="archive-sidebar" id="archiveSidebar"></aside>
+    <div class="archive-content">
+      <div class="stats-bar" id="archiveStats"></div>
+      <div class="view-tabs" id="archiveTabs">
+        <button class="view-tab active" data-view="tag">按标签<span class="en">By Tag</span></button>
+        <button class="view-tab" data-view="submitted">按提交时间<span class="en">By Submitted</span></button>
+        <button class="view-tab" data-view="uploaded">按上传时间<span class="en">By Upload</span></button>
+        <button class="view-tab" data-view="published">按出版时间<span class="en">By Publish</span></button>
+      </div>
+      <div id="archiveContent"></div>
+    </div>
+  </div>
+</div>
+<script>
+// ===== 团队成员数据 =====
+const PEOPLE = [
+  {
+    id: "li-tuobang",
+    name: "李拓邦",
+    nameEn: "Li Tuobang",
+    title: "",
+    titleEn: "",
+    desc: "统计学、生物学、经济学 · Statistics & Biology & Economics",
+    descEn: "",
+    avatar: "images/avatars/li-tuobang.jpg",
+    files: [
+      {
+        name: "根据分子量分布的矩差推断代谢方向",
+        nameEn: "Infer metabolic velocities from moment differences of molecular weight distributions",
+        abstract:"代谢通路描述了生物化学中分子之间是如何转换的。由于一个分子可以同时在多条代谢通路中发挥作用。代谢网络的复杂性使得推断代谢平衡的变化极为困难。同位素实验是目前标准的测定代谢流量的方法。可是，目前仍然没有方法可以准确推断代谢平衡在不同环境下的变化。本研究介绍了一个不同的概念：分子量分布，即所有关注的代谢物的分子量的经验分布。通过推断这些分布在位置和散度上的差异，即使在不知道这些化合物的化学结果和对应的代谢通路的情况下，也能定量地推断分子量分布变化。这篇论文为一个经典的生物概念提供了一个数学框架。",
+        abstractEn:"Metabolic pathways are fundamental maps in biochemistry that detail how molecules are transformed through various reactions. The complexity of metabolic network, where a single compound can play a part in multiple pathways, poses a challenge in inferring metabolic balance changes over time or after different treatments. Isotopic labeling experiment is the standard method to infer metabolic flux, which is currently defined as the flow of a single metabolite through a given pathway over time. However, there is still no way to accurately infer the metabolic balance changes after different treatments in an experiment. This study introduces a different concept: molecular weight distribution, which is the empirical distribution of the molecular weights of all metabolites of interest. By estimating the differences of the location and scale estimates of these distributions, it becomes possible to quantitatively infer the metabolic balance changes even without requiring knowledge of the exact chemical structures of these compounds and their related pathways. This research article provides a mathematical framing for a classic biological concept.",
+        submitted: "2023-11-01",
+        uploaded: "2026-04-04",
+        published: "2023-11-20",
+        tags: ["论文", "生物统计", "生物数学"],
+        tagsEn: ["Paper", "Biostatistics", "Biomathematics"],
+        authorNoteLinks:[
+          { source:"作者手记", url:"https://example.com/note‑paper‑meta‑weight" }
+        ],
+        chains:[
+          {
+            chainName:"Arweave",
+            txId:"0x5778406CA129440444F2458735c7940B49c7a6d5",
+            url:"https://7ahyxum6pmnbd55lx35od6m6u3k5v5oogkzsy33lazrvydcm4yja.turbo‑gateway.com/‑A‑L0Z57GhH3q7764fmeptXa9c4ysyxvawZjXAxM5hI"
+          }
+        ],
+        preprintUrls:[
+          { source:"zenodo", url:"https://doi.org/10.5281/zenodo.10096870" },
+          { source:"zenodo", url:"https://doi.org/10.5281/zenodo.10405854" },
+          { source:"zenodo", url:"https://doi.org/10.5281/zenodo.10891344" },
+          { source:"arXiv", url:"https://arxiv.org/abs/xxxx.xxxxx" }
+        ]
+      }      
+    ]
+  }
+];
+
+// ===== 渲染团队卡片【修复头像兜底】 =====
+function renderPeopleGrid() {
+  const grid = document.getElementById('peopleGrid');
+  grid.innerHTML = PEOPLE.map(p => {
+    let photoHtml = '';
+    if(p.avatar){
+      photoHtml = `<div data-avatar-url="${p.avatar}" data-name-en="${p.nameEn}"></div>`;
+    }else{
+      photoHtml = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z" /></svg>`;
+    }
+    return `
+    <div class="person-card" onclick="location.hash='#/people/${p.id}'">
+      <div class="person-photo">
+        ${photoHtml}
+      </div>
+      <div class="person-info">
+        <div class="person-name">${p.name}</div>
+        <div class="person-name-en">${p.nameEn}</div>
+        <div class="person-title">${p.title} · ${p.titleEn}</div>
+        <div class="person-desc">${p.desc}</div>
+        <div class="person-cta">查看研究档案 →</div>
+      </div>
+    </div>
+    `;
+  }).join('');
+
+  document.querySelectorAll('[data-avatar-url]').forEach(container=>{
+    const src = container.dataset.avatarUrl;
+    const img = new Image();
+    img.style.width = "100%";
+    img.style.height = "100%";
+    img.style.objectFit = "cover";
+    img.alt = "头像";
+    img.src = src;
+    img.onerror = function(){
+      container.innerHTML = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z" /></svg>`;
+      img.onerror = null;
+    };
+    container.appendChild(img);
+  });
+}
+
+// ===== 档案页状态 =====
+let currentPerson = null;
+let archiveView = 'tag';
+let archiveFilter = null;
+const archiveTabs = document.querySelectorAll('#archiveTabs .view-tab');
+archiveTabs.forEach(tab => {
+  tab.addEventListener('click', () => {
+    archiveTabs.forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    archiveView = tab.dataset.view;
+    archiveFilter = null;
+    renderArchive();
+  });
+});
+function formatDate(iso) {
+  const d = new Date(iso);
+  return d.getFullYear() + '-' +
+    String(d.getMonth() + 1).padStart(2, '0') + '-' +
+    String(d.getDate()).padStart(2, '0');
+}
+function renderArchiveSidebar(files) {
+  const sidebar = document.getElementById('archiveSidebar');
+  let html = '';
+  if (archiveView === 'tag') {
+    const tagMap = {};
+    files.forEach(file => {
+      file.tags.forEach((tagZh, i) => {
+        const tagEn = file.tagsEn[i] || '';
+        if (!tagMap[tagZh]) tagMap[tagZh] = { en: tagEn, count: 0 };
+        tagMap[tagZh].count++;
+      });
+    });
+    const tags = Object.keys(tagMap).sort();
+    html += `<div class="sidebar-section">`;
+    html += `<div class="sidebar-title">目录 · Directory</div>`;
+    html += `<ul class="sidebar-list">`;
+    html += `<li class="sidebar-item ${archiveFilter === null ? 'active' : ''}" data-filter="">全部 / All<span class="cnt">${files.length}</span></li>`;
+    tags.forEach(tagZh => {
+      const isActive = archiveFilter === tagZh;
+      html += `<li class="sidebar-item ${isActive ? 'active' : ''}" data-filter="${tagZh}"># ${tagZh} <span style="font-size:10px;opacity:.7;color:#9ca3af">${tagMap[tagZh].en}</span><span class="cnt">${tagMap[tagZh].count}</span></li>`;
+    });
+    html += `</ul></div>`;
+  } else {
+    let timeField, labelZh, labelEn, noteText;
+    if(archiveView === 'submitted'){
+      timeField = 'submitted';
+      labelZh = '提交';
+      labelEn = 'Submitted';
+      noteText = '提交：作者稿件完成提交时间<br/>Submitted: Author manuscript submission date';
+    }else if(archiveView === 'uploaded'){
+      timeField = 'uploaded';
+      labelZh = '上传';
+      labelEn = 'Upload';
+      noteText = '上传：上传至不可篡改区块链<br/>Upload: written to immutable blockchain';
+    }else{
+      timeField = 'published';
+      labelZh = '出版';
+      labelEn = 'Publish';
+      noteText = '出版：获得DOI、CNKI等正式出版编号<br/>Publish: DOI / CNKI official identifier assigned';
+    }
+    html += `<div class="sidebar-section">`;
+    html += `<div class="sidebar-title">${labelZh} · ${labelEn}</div>`;
+    html += `<div class="sidebar-desc">${noteText}</div>`;
+    html += `<ul class="sidebar-list">`;
+    html += `<li class="sidebar-item ${archiveFilter === null ? 'active' : ''}" data-filter="">全部 / All<span class="cnt">${files.length}</span></li>`;
+    const monthMap = {};
+    files.forEach(f => {
+      const d = new Date(f[timeField]);
+      const key = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
+      if (!monthMap[key]) monthMap[key] = 0;
+      monthMap[key]++;
+    });
+    const months = Object.keys(monthMap).sort().reverse();
+    let currentYear = '';
+    months.forEach(m => {
+      const year = m.slice(0, 4);
+      if (year !== currentYear) {
+        currentYear = year;
+        html += `<li class="sidebar-group">${year} 年</li>`;
+      }
+      const isActive = archiveFilter === m;
+      const monthNum = parseInt(m.slice(5));
+      html += `<li class="sidebar-item ${isActive ? 'active' : ''}" data-filter="${m}">${year}/${monthNum}<span class="cnt">${monthMap[m]}</span></li>`;
+    });
+    html += `</ul></div>`;
+  }
+  sidebar.innerHTML = html;
+  sidebar.querySelectorAll('.sidebar-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const f = item.dataset.filter;
+      archiveFilter = f === '' ? null : f;
+      renderArchive();
+    });
+  });
+}
+function renderFileCard(file) {
+  const mainTagZh = file.tags[0] || '未分类';
+  const mainTagEn = file.tagsEn[0] || 'Uncategorized';
+  const chips = file.tags.map((tag, i) =>
+    `<span class="tag-chip">${tag}<span class="en">${file.tagsEn[i] || ''}</span></span>`
+  ).join('');
+
+  let authorNoteHtml = '';
+  if(file.authorNoteLinks && file.authorNoteLinks.length>0){
+    authorNoteHtml = `<div class="author-note-link-list">`;
+    file.authorNoteLinks.forEach(n=>{
+      authorNoteHtml +=`
+      <div class="author-note-link-item">
+        <span class="author-note-name">${n.source}</span>
+        <a href="${n.url}" target="_blank" rel="noopener">${n.url}</a>
+      </div>`;
+    })
+    authorNoteHtml += `</div>`;
+  }
+
+  let chainHtml = `<div class="chain-list">`;
+  file.chains.forEach(ch=>{
+    chainHtml +=`
+    <div class="chain-item">
+      <span class="chain-name">${ch.chainName}</span>
+      <a href="${ch.url}" target="_blank" rel="noopener">${ch.txId}</a>
+    </div>`;
+  });
+  chainHtml += `</div>`;
+
+  let preprintHtml = '';
+  if(file.preprintUrls && file.preprintUrls.length>0){
+    preprintHtml = `<div class="preprint-list">`;
+    file.preprintUrls.forEach(p=>{
+      preprintHtml +=`
+      <div class="preprint-item">
+        <span class="preprint-name">${p.source}</span>
+        <a href="${p.url}" target="_blank" rel="noopener">${p.url}</a>
+      </div>`;
+    })
+    preprintHtml += `</div>`;
+  }
+
+  return `
+    <div class="file-card">
+      <div class="file-top">
+        <div>
+          <div class="file-name">${file.name}</div>
+          <div class="file-name-en">${file.nameEn}</div>
+        </div>
+        <div class="file-badge">${mainTagZh}<span class="en">${mainTagEn}</span></div>
+      </div>
+      <div class="file-abstract">${file.abstract||""}</div>
+      ${file.abstractEn?`<div class="file-abstract-en">${file.abstractEn}</div>`:""}
+      ${authorNoteHtml}
+      ${chainHtml}
+      ${preprintHtml}
+      <div class="file-meta">
+        <span><span class="meta-label">提交 <span class="en">Submitted</span></span> ${formatDate(file.submitted)}</span>
+        <span><span class="meta-label">上传 <span class="en">Upload</span></span> ${formatDate(file.uploaded)}</span>
+        <span><span class="meta-label">出版 <span class="en">Publish</span></span> ${formatDate(file.published)}</span>
+        <div class="meta-note">提交：作者稿件完成提交时间；上传：上传至不可篡改区块链；出版：获得DOI、CNKI等正式出版编号。<br/>Submitted: Author manuscript submission date. Upload: written to immutable blockchain. Publish: DOI / CNKI official identifier assigned.</div>
+      </div>
+      <div class="file-tags">${chips}</div>
+    </div>
+  `;
+}
+function renderArchiveContent(files) {
+  const area = document.getElementById('archiveContent');
+  if (files.length === 0) {
+    area.innerHTML = '<div class="empty-state">暂无文件 / No files</div>';
+    return;
+  }
+  if (archiveView === 'tag') {
+    const tagMap = {};
+    files.forEach(file => {
+      file.tags.forEach((tagZh, i) => {
+        const tagEn = file.tagsEn[i] || '';
+        if (!tagMap[tagZh]) tagMap[tagZh] = { en: tagEn, files: [] };
+        tagMap[tagZh].files.push(file);
+      });
+    });
+    const tags = Object.keys(tagMap).sort();
+    let html = '';
+    tags.forEach(tagZh => {
+      const { en: tagEn, files: groupFiles } = tagMap[tagZh];
+      html += `
+        <section class="tag-group">
+          <div class="tag-group-header">
+            <span class="tag-group-title"># ${tagZh}<span class="en">${tagEn}</span></span>
+            <span class="tag-group-count">${groupFiles.length} 个文件 / files</span>
+          </div>
+          <div class="file-list">${groupFiles.map(renderFileCard).join('')}</div>
+        </section>`;
+    });
+    area.innerHTML = html;
+  } else {
+    let timeField, labelZh, labelEn;
+    if(archiveView === 'submitted'){
+      timeField = 'submitted';
+      labelZh = '提交';
+      labelEn = 'Submitted';
+    }else if(archiveView === 'uploaded'){
+      timeField = 'uploaded';
+      labelZh = '上传';
+      labelEn = 'Upload';
+    }else{
+      timeField = 'published';
+      labelZh = '出版';
+      labelEn = 'Publish';
+    }
+    const sorted = [...files].sort((a, b) => new Date(b[timeField]) - new Date(a[timeField]));
+    let html = '<div class="timeline">';
+    sorted.forEach(file => {
+      html += `
+        <div class="timeline-item">
+          <div class="timeline-date">${formatDate(file[timeField])} · ${labelZh} / ${labelEn}</div>
+          ${renderFileCard(file)}
+        </div>`;
+    });
+    html += '</div>';
+    area.innerHTML = html;
+  }
+}
+function renderArchive() {
+  if (!currentPerson) return;
+  const files = currentPerson.files;
+  const allTags = new Set();
+  files.forEach(f => f.tags.forEach(t => allTags.add(t)));
+  const earliestSubmitted = files.reduce((m, f) => f.submitted < m ? f.submitted : m, files[0].submitted);
+  const latestUploaded = files.reduce((m, f) => f.uploaded > m ? f.uploaded : m, files[0].uploaded);
+  document.getElementById('archiveStats').innerHTML = `
+    <div class="stat-item">文件 <span class="en">Files</span><strong>${files.length}</strong></div>
+    <div class="stat-item">标签 <span class="en">Tags</span><strong>${allTags.size}</strong></div>
+    <div class="stat-item">最早提交 <span class="en">Earliest Submitted</span><strong>${formatDate(earliestSubmitted)}</strong></div>
+    <div class="stat-item">最新上传 <span class="en">Latest Uploaded</span><strong>${formatDate(latestUploaded)}</strong></div>
+  `;
+  let filtered = files;
+  if (archiveFilter) {
+    let tf;
+    if(archiveView === 'submitted') tf='submitted';
+    else if(archiveView === 'uploaded') tf='uploaded';
+    else tf='published';
+    filtered = files.filter(f => {
+      const d = new Date(f[tf]);
+      const key = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
+      return key === archiveFilter;
+    });
+  }
+  renderArchiveSidebar(files);
+  renderArchiveContent(filtered);
+}
+// ===== Hash Router =====
+function router() {
+  const hash = location.hash || '#/';
+  const homePage = document.getElementById('page-home');
+  const archivePage = document.getElementById('page-archive');
+  if (hash.startsWith('#/people/')) {
+    const personId = hash.slice('#/people/'.length);
+    currentPerson = PEOPLE.find(p => p.id === personId);
+    if (currentPerson) {
+      document.getElementById('archiveName').textContent = currentPerson.name + ' · ' + currentPerson.nameEn;
+      document.getElementById('archiveMeta').textContent = currentPerson.title + ' / ' + currentPerson.titleEn + ' — ' + currentPerson.desc;
+      homePage.classList.remove('active');
+      archivePage.classList.add('active');
+      archiveView = 'tag';
+      archiveFilter = null;
+      archiveTabs.forEach(t => t.classList.toggle('active', t.dataset.view === 'tag'));
+      renderArchive();
+      window.scrollTo(0, 0);
+      return;
+    }
+  }
+  archivePage.classList.remove('active');
+  homePage.classList.add('active');
+  window.scrollTo(0, 0);
+}
+window.addEventListener('hashchange', router);
+renderPeopleGrid();
+router();
+</script>
+</body>
+</html>
